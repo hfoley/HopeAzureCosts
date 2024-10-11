@@ -1,0 +1,29 @@
+
+import datetime
+
+wildstarter = '202406'
+relative_path = "Files/hopelandlake_raw/azurecosts/HopeAzureCosts-HopeCosts/"
+
+formatted_date = f"{wildstarter[:4]}/{wildstarter[4:]}"
+
+fullpath = relative_path+wildstarter+'*/*/*.csv.gz'
+print(fullpath)
+
+# Define the  path
+fullpath = relative_path+wildstarter+'*/*/*.csv.gz'
+print(fullpath)
+# Combine the base path and the relative path
+#full_path = f"{base_path}{relative_path}"
+
+# Load the gzip-compressed CSV files from the combined path
+df = spark.read.format("csv").option("header", "true").option("compression", "gzip").load(fullpath)
+
+
+display(df)
+
+#create the output path to generate a monthly parquet 
+outputFilePath = "Files/raw/azurecosts/"+ formatted_date +"/"
+print(outputFilePath)
+
+# Write the DataFrame to the specified path
+df.write.mode("overwrite").format("parquet").save(outputFilePath)
